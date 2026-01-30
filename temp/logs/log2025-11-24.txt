@@ -1,0 +1,1 @@
+[Mon, 24 Nov 25 23:57:13 +0000][INFO] Nuevo trueque publicado por usuario ID 6

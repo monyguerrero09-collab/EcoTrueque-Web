@@ -1,0 +1,183 @@
+<?php
+require_once APP_PATH . 'helpers/bhtml.php';
+?>
+
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+<div class="container my-4">
+    <div class="row justify-content-center">
+        <div class="col-12 col-md-10 col-lg-8">
+            <div class="card shadow-sm border-light">
+                <div class="card-body p-4">
+
+                    <h2 class="text-center mb-4 text-success">✏️ Editar Trueque</h2>
+
+                    <!-- Flash Messages -->
+                    <?php
+                    $flash_messages = Session::get('flash_messages');
+                    if (!empty($flash_messages)):
+                        foreach ($flash_messages as $type => $message): ?>
+                            <div class="alert alert-<?= $type=='valid'?'success':$type ?> alert-dismissible fade show" role="alert">
+                                <strong><?= ($type=='valid'?'¡Éxito!':'¡Error!') ?></strong>
+                                <?= htmlspecialchars($message) ?>
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                            </div>
+                        <?php endforeach;
+                        Session::delete('flash_messages');
+                    endif;
+                    ?>
+
+                    <!-- Validación de errores del modelo -->
+                    <?php if (isset($trueque->error) && is_array($trueque->error) && count($trueque->error) > 0): ?>
+                        <div class="alert alert-danger">
+                            <strong>¡Error de Validación!</strong>
+                            <ul>
+                                <?php foreach($trueque->error as $err):
+                                    $msg = is_object($err) ? $err->getMessage() : $err;
+                                    if(!empty($msg)): ?>
+                                        <li><?= htmlspecialchars($msg) ?></li>
+                                    <?php endif;
+                                endforeach; ?>
+                            </ul>
+                        </div>
+                    <?php endif; ?>
+
+                    <!-- Formulario con enctype correcto para archivos -->
+                    <?= Form::openMultipart("trueque/editar/{$trueque->id}") ?>
+
+                    <div class="mb-3">
+                        <label for="ofrezco" class="form-label">¿Qué ofreces?</label>
+                        <?= Form::text('trueque.ofrezco', 'class="form-control" id="ofrezco" placeholder="Ej. Tomates"', $trueque->ofrezco) ?>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="descripcion" class="form-label">Descripción Detallada</label>
+                        <?= Form::textarea('trueque.descripcion', 'class="form-control" id="descripcion" rows="4" placeholder="Describe tu producto..."', $trueque->descripcion) ?>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="busco" class="form-label">¿Qué buscas a cambio?</label>
+                        <?= Form::textarea('trueque.busco', 'class="form-control" id="busco" rows="3" placeholder="Ej. Servicio..."', $trueque->busco) ?>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label"><strong>Ubicación</strong></label>
+                        <?= Form::hidden('trueque.latitud','id="latitud"', $trueque->latitud) ?>
+                        <?= Form::hidden('trueque.longitud','id="longitud"', $trueque->longitud) ?>
+
+                        <div class="input-group mb-2">
+                            <input type="text" id="direccion" class="form-control" placeholder="Escribe tu dirección...">
+                            <button type="button" class="btn btn-outline-primary" id="buscarDireccion">Buscar</button>
+                        </div>
+                        <div id="direccionError" class="form-text text-danger small"></div>
+
+                        <div id="map" style="height:300px; border-radius:8px; border:1px solid #ddd; background:#f9f9f9;"></div>
+                        <div class="form-text mt-1">Arrastra el marcador o haz clic en el mapa para ajustar la ubicación.</div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="imagen_producto" class="form-label"><strong>Cambiar imagen (Opcional)</strong></label>
+                        <?= Form::file('imagen_producto','class="form-control" id="imagen_producto" accept="image/*"') ?>
+                        <div class="form-text">Sube una nueva foto solo si deseas reemplazar la actual.</div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label>Imagen actual:</label>
+                        <?php
+                        $imagen_src = $trueque->getImagenSrc();
+                        echo Bhtml::img($imagen_src,"Imagen de {$trueque->ofrezco}",[
+                            "class"=>"img-fluid rounded border",
+                            "id"=>"imagen_preview",
+                            "style"=>"max-height:150px;object-fit:cover;"
+                        ]);
+                        ?>
+                    </div>
+
+                    <div class="d-flex justify-content-between">
+                        <button type="submit" class="btn btn-success">✅ Guardar Cambios</button>
+                        <?= Html::link('trueque/index','⬅️ Regresar','class="btn btn-secondary"') ?>
+                    </div>
+
+                    <?= Form::close() ?>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+
+        // --- Mapa Leaflet ---
+        const startLat = <?= json_encode($trueque->latitud ?? 20.5937) ?>;
+        const startLng = <?= json_encode($trueque->longitud ?? -100.3928) ?>;
+        const startZoom = <?= ($trueque->latitud) ? 16 : 6 ?>;
+
+        const map = L.map('map').setView([startLat, startLng], startZoom);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; OpenStreetMap contributors'
+        }).addTo(map);
+
+        const marker = L.marker([startLat, startLng], {draggable:true}).addTo(map);
+        const latField = document.getElementById('latitud');
+        const lngField = document.getElementById('longitud');
+
+        function updateMarker(latlng, zoom){
+            marker.setLatLng(latlng);
+            if(zoom) map.setView(latlng, zoom);
+            latField.value = latlng.lat;
+            lngField.value = latlng.lng;
+        }
+
+        marker.on('dragend', e => updateMarker(e.target.getLatLng(), map.getZoom()));
+        map.on('click', e => updateMarker(e.latlng, map.getZoom()));
+
+        // --- Buscar dirección ---
+        const buscarBtn = document.getElementById('buscarDireccion');
+        const direccionInput = document.getElementById('direccion');
+        const direccionError = document.getElementById('direccionError');
+
+        buscarBtn.addEventListener('click', ()=>{
+            const address = direccionInput.value.trim();
+            if(!address) return;
+            buscarBtn.disabled = true;
+            buscarBtn.textContent = 'Buscando...';
+            direccionError.textContent = '';
+
+            fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(address)}&limit=1&countrycodes=mx`)
+                .then(res => res.json())
+                .then(data=>{
+                    if(data && data.length>0){
+                        updateMarker(L.latLng(data[0].lat, data[0].lon),16);
+                    }else{
+                        direccionError.textContent = 'No se encontró la dirección.';
+                    }
+                })
+                .catch(()=>direccionError.textContent='Error al conectar con el servicio.')
+                .finally(()=>{
+                    buscarBtn.disabled=false;
+                    buscarBtn.textContent='Buscar';
+                });
+        });
+
+        // --- Vista previa de imagen ---
+        const inputImagen = document.getElementById('imagen_producto');
+        const imagenPreview = document.getElementById('imagen_preview');
+        inputImagen.addEventListener('change', event=>{
+            const file = event.target.files[0];
+            if(file){
+                const reader = new FileReader();
+                reader.onload = e => imagenPreview.src = e.target.result;
+                reader.readAsDataURL(file);
+            }
+        });
+
+    });
+</script>
+
+
+
+
+

@@ -1,0 +1,75 @@
+<div class="container d-flex justify-content-center p-4 rounded-3"
+     style="background: linear-gradient(135deg, #e8f5e9, #a5d6a7);">
+
+    <div class="card shadow-lg p-4 rounded-4"
+         style="width: 100%; max-width: 400px; border: none; background-color: rgba(255,255,255,0.95); box-shadow: 0 4px 12px rgba(46, 125, 50, 0.3);">
+
+        <div class="text-center mb-4">
+            <div style="background-color: #66bb6a; width: 90px; height: 90px; border-radius: 50%;
+                        display: flex; align-items: center; justify-content: center; margin: 0 auto;">
+                <i class="fas fa-leaf" style="font-size: 40px; color: white;"></i>
+            </div>
+            <h3 class="fw-bold mt-3" style="color: #2e7d32;">🌱 Trueque Ecológico</h3>
+            <p class="text-muted mb-0">Inicia sesión para continuar</p>
+        </div>
+
+        <?= Form::open('session/login') ?>
+        <div class="form-floating mb-3">
+            <?= Form::email('login[email]', [
+                'class' => 'form-control rounded-3 border-0 shadow-sm',
+                'id' => 'email',
+                'placeholder' => 'correo@ejemplo.com',
+                'required' => true,
+                'style' => 'background-color:#f1f8e9;'
+            ]) ?>
+            <label for="email" style="color:#2e7d32;">📧 Correo Electrónico</label>
+        </div>
+
+        <div class="form-floating mb-3">
+            <?= Form::password('login[password]', [
+                'class' => 'form-control rounded-3 border-0 shadow-sm',
+                'id' => 'password',
+                'placeholder' => 'Contraseña',
+                'required' => true,
+                'style' => 'background-color:#f1f8e9;'
+            ]) ?>
+            <label for="password" style="color:#2e7d32;">🔑 Contraseña</label>
+        </div>
+
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" id="remember" style="border-color:#388e3c;">
+                <label class="form-check-label text-secondary" for="remember">
+                    Recordarme
+                </label>
+            </div>
+            <a href="#" class="text-decoration-none" style="color: #388e3c; font-weight: 600;">
+                ¿Olvidaste tu contraseña?
+            </a>
+        </div>
+
+        <div class="d-grid mb-3">
+            <?= Form::submit('🍃 Entrar', [
+                'class' => 'btn fw-bold rounded-pill py-2',
+                'style' => 'background-color:#2e7d32; color:white; border:none; box-shadow:0 4px 10px rgba(46,125,50,0.3);'
+            ]) ?>
+        </div>
+
+        <div class="text-center">
+            <p class="text-muted mb-1">¿No tienes cuenta?</p>
+            <a href="<?= PUBLIC_PATH ?>usuario/registrar"
+               class="btn rounded-pill fw-bold py-2 w-100"
+               style="border:2px solid #66bb6a; color:#2e7d32; background-color:white; transition:0.3s;">
+                ✳️ Registrar nuevo usuario
+            </a>
+        </div>
+        <?= Form::close() ?>
+
+        <div class="text-center mt-4">
+            <small class="text-muted">
+                © 2025 Trueque Ecológico 🌿 | Diseñado por <span style="color:#2e7d32;">Mónica Olvera</span>
+            </small>
+        </div>
+    </div>
+</div>
+

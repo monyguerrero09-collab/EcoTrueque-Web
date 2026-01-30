@@ -1,0 +1,169 @@
+<?php View::content(); ?>
+
+<div class="container mt-5">
+    <div class="card shadow-lg p-4 rounded-4">
+        <h2 class="text-center mb-3"><?= $title ?? 'Publicar Trueque' ?></h2>
+        <p class="text-center text-muted"><?= $subtitle ?? '' ?></p>
+
+        <!-- Mensajes Flash -->
+        <?php if (isset($_SESSION['KUMBIA_FLASH'])): ?>
+            <div class="mt-2">
+                <?php foreach ($_SESSION['KUMBIA_FLASH'] as $msg): ?>
+                    <div class="alert alert-<?= $msg['type'] ?>"><?= $msg['message'] ?></div>
+                <?php endforeach; unset($_SESSION['KUMBIA_FLASH']); ?>
+            </div>
+        <?php endif; ?>
+
+        <!-- 🌿 Formulario de publicación -->
+        <?= Form::openMultipart(null, 'POST', ['class' => 'mt-3']) ?>
+
+        <div class="mb-3">
+            <label for="titulo" class="form-label fw-bold">Título del Trueque</label>
+            <?= Form::text('trueque.titulo', 'class="form-control" required') ?>
+        </div>
+
+        <div class="mb-3">
+            <label for="descripcion" class="form-label fw-bold">Descripción</label>
+            <?= Form::textarea('trueque.descripcion', 'class="form-control" rows="4" required') ?>
+        </div>
+
+        <div class="mb-3">
+            <label for="ofrezco" class="form-label fw-bold">¿Qué ofreces en el trueque?</label>
+            <?= Form::select('trueque.ofrezco', [
+                'Ropa' => 'Ropa',
+                'Libros' => 'Libros',
+                'Electrónicos' => 'Electrónicos',
+                'Hogar' => 'Hogar',
+                'Comida casera' => 'Comida casera',
+                'Servicios' => 'Servicios',
+                'Otros' => 'Otros'
+            ], null, 'class="form-select" required') ?>
+        </div>
+
+        <div class="mb-3">
+            <label for="busco" class="form-label fw-bold">¿Qué estás buscando a cambio?</label>
+            <?= Form::text('trueque.busco', 'class="form-control" placeholder="Ej. Fruta, libros, utensilios..." required') ?>
+        </div>
+
+        <div class="mb-3">
+            <label for="imagen" class="form-label fw-bold">Imagen del Artículo</label>
+            <input type="file" name="imagen" id="imagen" class="form-control" accept="image/*">
+        </div>
+
+        <!-- 📍 Ubicación con mapa -->
+        <div class="mb-3">
+            <label class="form-label fw-bold">Ubicación del trueque</label>
+            <input type="text" id="direccion" class="form-control mb-2" placeholder="Ingresa una dirección o lugar">
+            <button type="button" id="buscarDireccion" class="btn btn-outline-success btn-sm mb-2">Buscar</button>
+            <small id="direccionError" class="text-danger d-block mb-2"></small>
+            <div id="map" style="height: 350px; border-radius: 12px;"></div>
+        </div>
+
+        <input type="hidden" name="trueque[latitud]"  id="latitud" value="">
+        <input type="hidden" name="trueque[longitud]" id="longitud" value="">
+
+        <div class="text-center mt-4">
+            <button type="submit" class="btn btn-success px-4 rounded-pill">🌱 Publicar Trueque</button>
+        </div>
+
+        <?= Form::close() ?>
+    </div>
+</div>
+
+<!-- 🌍 Script de Leaflet con geolocalización y reverse geocoding -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css">
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const latField = document.getElementById('latitud');
+        const lngField = document.getElementById('longitud');
+        const direccionInput = document.getElementById('direccion');
+        const buscarBtn = document.getElementById('buscarDireccion');
+        const direccionError = document.getElementById('direccionError');
+
+        const defaultLat = <?= json_encode($trueque->latitud ?? 20.5937) ?>;
+        const defaultLng = <?= json_encode($trueque->longitud ?? -100.3928) ?>;
+        const startZoom = <?= ($trueque->latitud ?? false) ? 16 : 6 ?>;
+
+        const map = L.map('map').setView([defaultLat, defaultLng], startZoom);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; OpenStreetMap contributors'
+        }).addTo(map);
+
+        const marker = L.marker([defaultLat, defaultLng], { draggable: true }).addTo(map);
+
+        function updateMarker(latlng, zoom = null) {
+            marker.setLatLng(latlng);
+            if (zoom) map.setView(latlng, zoom);
+            latField.value = latlng.lat;
+            lngField.value = latlng.lng;
+
+            // Reverse geocoding: llenar automáticamente el input de dirección
+            fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${latlng.lat}&lon=${latlng.lng}`)
+                .then(res => res.json())
+                .then(data => {
+                    if (data && data.address) {
+                        const parts = [
+                            data.address.road || '',
+                            data.address.suburb || '',
+                            data.address.city || data.address.town || '',
+                            data.address.state || ''
+                        ].filter(Boolean);
+                        direccionInput.value = parts.join(', ');
+                    }
+                })
+                .catch(() => console.warn('No se pudo obtener la dirección'));
+        }
+
+        // GEOLOCALIZACIÓN AUTOMÁTICA
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(
+                function(position) {
+                    const userLatLng = L.latLng(position.coords.latitude, position.coords.longitude);
+                    updateMarker(userLatLng, 16);
+                },
+                function(error) {
+                    console.warn('No se pudo obtener la ubicación del usuario: ' + error.message);
+                }
+            );
+        }
+
+        marker.on('dragend', e => updateMarker(e.target.getLatLng(), map.getZoom()));
+        map.on('click', e => updateMarker(e.latlng, map.getZoom()));
+
+        // Buscar dirección por texto
+        function buscarDireccionFunc(address) {
+            direccionError.textContent = '';
+            if (!address) return;
+
+            buscarBtn.disabled = true;
+            buscarBtn.textContent = 'Buscando...';
+
+            fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(address)}&limit=1&countrycodes=mx`)
+                .then(res => res.json())
+                .then(data => {
+                    if (data && data.length > 0) {
+                        const lat = parseFloat(data[0].lat);
+                        const lon = parseFloat(data[0].lon);
+                        updateMarker(L.latLng(lat, lon), 16);
+                    } else {
+                        direccionError.textContent = 'No se encontró la dirección.';
+                    }
+                })
+                .catch(() => direccionError.textContent = 'Error al conectar con el servicio.')
+                .finally(() => {
+                    buscarBtn.disabled = false;
+                    buscarBtn.textContent = 'Buscar';
+                });
+        }
+
+        buscarBtn.addEventListener('click', () => buscarDireccionFunc(direccionInput.value.trim()));
+        direccionInput.addEventListener('keypress', e => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                buscarDireccionFunc(direccionInput.value.trim());
+            }
+        });
+    });
+</script>

@@ -1,0 +1,43 @@
+<?php
+/**
+ * Vista Parcial para mostrar los mensajes Flash de KumbiaPHP.
+ *
+ * ✨ SOLUCIÓN DEFINITIVA:
+ * - Abandonamos todos los métodos fallidos (flash(), Flash::show(), etc.).
+ * - Este código usa la clase `Session` de KumbiaPHP para leer
+ * directamente los mensajes que el controlador guardó con
+ * Flash::valid(), Flash::error(), etc.
+ *
+ * NOTA: Esta es la ruta que tus errores indican:
+ * app/views/_shared/partials/flash.phtml
+ */
+
+// Mapeo de tipos de Kumbia a clases de Bootstrap
+$flash_types = [
+    'valid'   => 'success', // Kumbia usa 'valid' para éxito
+    'success' => 'success', // Por si acaso
+    'error'   => 'danger',  // Kumbia usa 'error'
+    'warning' => 'warning', // Kumbia usa 'warning'
+    'info'    => 'info',    // Kumbia usa 'info'
+];
+
+// Recorrer todos los tipos de mensajes
+foreach ($flash_types as $kumbia_type => $bootstrap_class) {
+
+    // Usar la clase Session para ver si existe un mensaje de este tipo
+    if (Session::has("flash.{$kumbia_type}")) {
+
+        // Si existe, obtener el mensaje
+        $message = Session::get("flash.{$kumbia_type}");
+
+        // Imprimir el HTML de Bootstrap (con botón de cierre)
+        echo "<div class='alert alert-{$bootstrap_class} alert-dismissible fade show' role='alert'>";
+        echo htmlspecialchars($message);
+        echo '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>';
+        echo "</div>";
+
+        // Importante: Borrar el mensaje de la sesión para que no se muestre de nuevo
+        Session::delete("flash.{$kumbia_type}");
+    }
+}
+?>

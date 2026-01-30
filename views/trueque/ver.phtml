@@ -1,0 +1,145 @@
+<?php
+if (!defined('APP_PATH')) define('APP_PATH', dirname(__DIR__, 2) . '/app/');
+?>
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Trueque Ecológico | Detalle del Trueque</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+    <style>
+        body {
+            background: linear-gradient(135deg, #a8edea, #fed6e3);
+            min-height: 100vh;
+            font-family: "Poppins", sans-serif;
+        }
+        .card {
+            border-radius: 1.5rem;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            border: none;
+        }
+        .avatar {
+            width: 65px;
+            height: 65px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid #82d173;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container py-5">
+    <div class="card p-4 mx-auto" style="max-width: 780px;">
+
+        <div class="d-flex align-items-center mb-3">
+            <img src="<?= PUBLIC_PATH ?>img/usuarios/<?= $trueque->usuario_avatar ?? 'default.png' ?>"
+                 class="avatar me-3">
+            <div>
+                <h5 class="mb-0 fw-bold text-success">
+                    <?= htmlspecialchars($trueque->usuario_nombre ?? 'Usuario') ?>
+                </h5>
+                <small class="text-muted">Publicó este trueque</small>
+            </div>
+        </div>
+
+        <!-- Imagen del trueque -->
+        <?php if (!empty($trueque->imagen_base64)): ?>
+            <img src="data:<?= $trueque->imagen_mime ?>;base64,<?= $trueque->imagen_base64 ?>"
+                 class="img-fluid rounded mb-3"
+                 style="width:100%; max-height:350px; object-fit:cover;">
+        <?php else: ?>
+            <img src="https://placehold.co/400x200/e9ecef/6c757d?text=Sin+imagen"
+                 class="img-fluid rounded mb-3">
+        <?php endif; ?>
+
+        <h4 class="text-success">🌱 Ofrezco:</h4>
+        <p class="fs-5"><?= htmlspecialchars($trueque->ofrezco) ?></p>
+
+        <h4 class="text-success">🔍 Busco:</h4>
+        <p class="fs-5"><?= htmlspecialchars($trueque->busco) ?></p>
+
+        <h4 class="text-success">📝 Descripción:</h4>
+        <p><?= nl2br(htmlspecialchars($trueque->descripcion)) ?></p>
+
+        <p class="text-muted small">📅 Fecha: <?= $trueque->fecha ?></p>
+
+        <?php if ($trueque->latitud && $trueque->longitud): ?>
+            <div id="map" style="height:350px; border-radius:1rem;"></div>
+
+            <script>
+                document.addEventListener('DOMContentLoaded', () => {
+                    const map = L.map('map').setView(
+                        [<?= $trueque->latitud ?>, <?= $trueque->longitud ?>], 15
+                    );
+
+                    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png')
+                        .addTo(map);
+
+                    L.marker([<?= $trueque->latitud ?>, <?= $trueque->longitud ?>])
+                        .addTo(map)
+                        .bindPopup("<?= htmlspecialchars($trueque->ofrezco) ?>");
+                });
+            </script>
+        <?php endif; ?>
+
+        <div class="text-center mt-4">
+            <a href="<?= PUBLIC_PATH ?>trueque/index" class="btn btn-success">
+                ⬅️ Regresar
+            </a>
+
+            <a href="<?= PUBLIC_PATH ?>trueque/conversacion/<?= $trueque->id ?>"
+               class="btn btn-outline-success">
+                💬 Abrir Chat
+            </a>
+
+            <button class="btn btn-success"
+                    data-bs-toggle="modal"
+                    data-bs-target="#modalMensaje">
+                ✉️ Mensaje rápido
+            </button>
+        </div>
+
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="modalMensaje">
+        <div class="modal-dialog">
+            <div class="modal-content rounded-4">
+                <form action="<?= PUBLIC_PATH ?>trueque/enviar_mensaje" method="POST">
+
+                    <div class="modal-header">
+                        <h5 class="modal-title">Enviar mensaje</h5>
+                        <button class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+
+                    <div class="modal-body">
+                        <input type="hidden" name="mensaje[trueque_id]" value="<?= $trueque->id ?>">
+                        <input type="hidden" name="mensaje[destinatario_id]" value="<?= $trueque->usuario_id ?>">
+
+                        <label class="form-label fw-bold">Mensaje:</label>
+                        <textarea name="mensaje[mensaje]" class="form-control" rows="4" required></textarea>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <button class="btn btn-success">Enviar</button>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
+

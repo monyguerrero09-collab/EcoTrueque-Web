@@ -1,0 +1,217 @@
+<?php
+
+if (!ob_get_level()) {
+    ob_start();
+}
+// === FIN DE SOLUCIÓN ===
+
+// El resto de la inicialización de KumbiaPHP sigue aquí...
+// Por ejemplo:
+// define('KUMBIAPATH', dirname(__FILE__));
+// require_once KUMBIAPATH . '/core/kumbia.php';
+?>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EcoTrueque - Intercambia, Presta y Salva el Planeta</title>
+    <!-- Incluimos Tailwind CSS para un diseño moderno y dinámico -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Usamos la fuente "Inter" para un look limpio -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Aplicamos la fuente Inter por defecto */
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        /* Pequeña animación para las tarjetas */
+        .hover-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .hover-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+    </style>
+</head>
+<body class="bg-emerald-50 text-gray-800">
+
+<!-- Encabezado -->
+<header class="bg-white shadow-sm sticky top-0 z-50">
+    <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+        <a href="#" class="text-3xl font-bold text-emerald-600">
+            EcoTrueque
+    </nav>
+</header>
+
+<!-- Sección Principal (Hero) -->
+<main>
+    <section class="relative h-[85vh] min-h-[600px] flex items-center justify-center text-center text-white px-4">
+        <!-- Imagen de fondo -->
+        <div class="absolute inset-0">
+            <img src="/Trueque_ecologico/default/public/libs/AdminLTE/dist/img/mano%20con%20planta.jpg"
+                 alt="Comunidad compartiendo"
+                 class="w-full h-full object-cover"
+                 onerror="this.src='https://placehold.co/1200x800/22c55e/ffffff?text=EcoTrueque'; this.onerror=null;">
+            <!-- Capa oscura para legibilidad -->
+            <div class="absolute inset-0 bg-black bg-opacity-50"></div>
+        </div>
+
+        <!-- Contenido de texto -->
+        <div class="relative z-10 max-w-3xl">
+            <h1 class="text-5xl md:text-7xl font-bold mb-4" style="text-shadow: 2px 2px 8px rgba(0,0,0,0.6);">
+                Dale una Segunda Vida a tus Cosas
+            </h1>
+            <p class="text-xl md:text-2xl mb-8 font-light" style="text-shadow: 1px 1px 4px rgba(0,0,0,0.7);">
+                Únete a la revolución del trueque. Intercambia, presta y consigue lo que necesitas sin gastar dinero y ayudando al planeta.
+            </p>
+            <a href="#" class="bg-emerald-500 hover:bg-emerald-600 text-white font-bold text-lg px-8 py-4 rounded-full transition-colors duration-300 transform hover:scale-105">
+                ¡Empieza a intercambiar!
+            </a>
+        </div>
+    </section>
+
+    <!-- Sección "¿De qué se trata?" -->
+    <section class="py-20 bg-white">
+        <div class="container mx-auto px-6 text-center">
+            <h2 class="text-4xl font-bold text-gray-800 mb-4">¿Qué es EcoTrueque?</h2>
+            <p class="text-lg text-gray-600 max-w-2xl mx-auto mb-12">
+                Somos una comunidad para reconectar. Aquí, tus objetos usados, tus habilidades o incluso esa comida extra de tu huerto tienen valor.
+            </p>
+
+            <!-- Tarjetas de conceptos -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Tarjeta 1: Intercambia -->
+                <div class="bg-gray-50 p-8 rounded-xl shadow-lg hover-card">
+                    <!-- Icono (SVG de Flechas de intercambio) -->
+                    <svg class="w-16 h-16 text-emerald-500 mx-auto mb-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M7.5 21L3 16.5m0 0L7.5 12M3 16.5h13.5m0-13.5L21 7.5m0 0L16.5 12M21 7.5H7.5" />
+                    </svg>
+                    <h3 class="text-2xl font-semibold mb-3">1. Intercambia Cosas</h3>
+                    <p class="text-gray-600">
+                        ¿Ese libro que ya leíste? ¿La ropa que no te pones? Cámbialo por algo que sí necesitas. ¡Trueque directo de objeto por objeto!
+                    </p>
+                </div>
+
+                <!-- Tarjeta 2: Presta -->
+                <div class="bg-gray-50 p-8 rounded-xl shadow-lg hover-card">
+                    <!-- Icono (SVG de Mano con corazón) -->
+                    <svg class="w-16 h-16 text-emerald-500 mx-auto mb-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" />
+                    </svg>
+                    <h3 class="text-2xl font-semibold mb-3">2. Presta y Pide</h3>
+                    <p class="text-gray-600">
+                        ¿Necesitas un taladro solo por un día? ¿Puedes prestar tu escalera? Fomenta la confianza y reduce el consumo innecesario.
+                    </p>
+                </div>
+
+                <!-- Tarjeta 3: Trueque Abierto -->
+                <div class="bg-gray-50 p-8 rounded-xl shadow-lg hover-card">
+                    <!-- Icono (SVG de Regalo) -->
+                    <svg class="w-16 h-16 text-emerald-500 mx-auto mb-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386l-1.591 1.591M21 12h-2.25m-.386 6.364l-1.591-1.591M12 18.75V21m-6.364-.386l1.591-1.591M3 12H.75m.386-6.364l1.591 1.591M12 3c-4.97 0-9 4.03-9 9s4.03 9 9 9 9-4.03 9-9-4.03-9-9-9z" />
+                    </svg>
+                    <h3 class="text-2xl font-semibold mb-3">3. El Valor de Todo</h3>
+                    <p class="text-gray-600">
+                        Intercambia tus cosas por comida casera, ayuda con una mudanza, clases de guitarra, o verduras de un huerto. ¡El límite es la creatividad!
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Sección Misión (No contaminar) -->
+    <section class="bg-emerald-600 text-white py-20">
+        <div class="container mx-auto px-6 flex flex-col md:flex-row items-center gap-12">
+            <!-- Imagen -->
+            <div class="w-full md:w-1/2">
+                <img src="https://images.unsplash.com/photo-1542601906-8b60c186836b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80"
+                     alt="Planeta Tierra limpio"
+                     class="rounded-xl shadow-2xl w-full h-auto object-cover"
+                     style="max-height: 400px;"
+                     onerror="this.src='https://placehold.co/600x400/ffffff/10b981?text=Cuidamos+el+Planeta'; this.onerror=null;">
+            </div>
+            <!-- Texto -->
+            <div class="w-full md:w-1/2 text-center md:text-left">
+                <h2 class="text-4xl font-bold mb-6">¿Por qué un EcoTrueque?</h2>
+                <p class="text-xl mb-4">
+                    Vivimos en un mundo de "usar y tirar". Cada objeto que compramos y desechamos deja una huella en el planeta.
+                </p>
+                <p class="text-lg text-emerald-100 mb-6">
+                    Al intercambiar y reutilizar, rompemos ese ciclo. Menos basura en los vertederos, menos recursos gastados en fabricar cosas nuevas, y más conexión con nuestra comunidad.
+                </p>
+                <a href="#" class="bg-white text-emerald-600 font-bold px-8 py-3 rounded-full transition-colors duration-300 hover:bg-emerald-50">
+                    Únete a la Misión
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Sección "Qué puedes intercambiar" (Visual) -->
+    <section class="py-20 bg-white">
+        <div class="container mx-auto px-6 text-center">
+            <h2 class="text-4xl font-bold text-gray-800 mb-12">Todo tiene una segunda oportunidad</h2>
+            <!-- Grid de Imágenes -->
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <!-- Ropa -->
+                <div class="relative rounded-lg overflow-hidden h-64 shadow-lg group">
+                    <img src="https://placehold.co/400x400/f87171/ffffff?text=Ropa+y+Moda" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300" alt="Ropa">
+                    <div class="absolute inset-0 bg-black bg-opacity-40 flex items-end">
+                        <h4 class="text-white text-2xl font-semibold p-4">Ropa y Moda</h4>
+                    </div>
+                </div>
+                <!-- Herramientas -->
+                <div class="relative rounded-lg overflow-hidden h-64 shadow-lg group">
+                    <img src="https://placehold.co/400x400/60a5fa/ffffff?text=Herramientas" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300" alt="Herramientas">
+                    <div class="absolute inset-0 bg-black bg-opacity-40 flex items-end">
+                        <h4 class="text-white text-2xl font-semibold p-4">Herramientas</h4>
+                    </div>
+                </div>
+                <!-- Comida -->
+                <div class="relative rounded-lg overflow-hidden h-64 shadow-lg group">
+                    <img src="https://placehold.co/400x400/34d399/ffffff?text=Comida+y+Huerto" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300" alt="Comida y Huerto">
+                    <div class="absolute inset-0 bg-black bg-opacity-40 flex items-end">
+                        <h4 class="text-white text-2xl font-semibold p-4">Comida y Huerto</h4>
+                    </div>
+                </div>
+                <!-- Servicios -->
+                <div class="relative rounded-lg overflow-hidden h-64 shadow-lg group">
+                    <img src="https://placehold.co/400x400/c084fc/ffffff?text=Servicios+y+Ayuda" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300" alt="Servicios y Ayuda">
+                    <div class="absolute inset-0 bg-black bg-opacity-40 flex items-end">
+                        <h4 class="text-white text-2xl font-semibold p-4">Servicios y Ayuda</h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Sección de Cierre (CTA) -->
+    <section class="bg-gray-800 text-white py-20">
+        <div class="container mx-auto px-6 text-center max-w-2xl">
+            <h2 class="text-4xl font-bold mb-6">¿Listo para ser parte del cambio?</h2>
+            <p class="text-xl text-gray-300 mb-8">
+                Publicar tu primer artículo es gratis y solo toma un minuto. Empieza a conectar con tu comunidad y a darle un respiro al planeta.
+            </p>
+
+            <!-- Botón modificado para redirigir al formulario de registro -->
+            <a href="<?= PUBLIC_PATH ?>usuario/registrar"
+               class="bg-emerald-500 hover:bg-emerald-600 text-white font-bold text-lg px-10 py-4 rounded-full transition-colors duration-300 transform hover:scale-105">
+                Regístrate Ahora!
+            </a>
+        </div>
+    </section>
+</main>
+
+<!-- Footer -->
+<footer class="bg-gray-900 text-gray-400 py-12">
+    <div class="container mx-auto px-6 text-center">
+        <p>&copy; <?php echo date('Y'); ?> EcoTrueque. Todos los derechos reservados.</p>
+        <p class="text-sm mt-2">Un proyecto por un planeta más verde.</p>
+    </div>
+</footer>
+
+</body>
+</html>

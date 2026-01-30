@@ -1,0 +1,46 @@
+<div class="card card-success card-outline">
+    <div class="card-header">
+        <h3 class="card-title">
+            <i class="fas fa-envelope"></i>
+            Formulario de Contacto
+        </h3>
+    </div>
+
+    <div class="card-body" style="background: linear-gradient(135deg, #a8edea, #fed6e3); border-radius: 15px; padding: 30px;">
+        <p class="text-center mb-4" style="font-size: 1.1em;">
+            🌿 Si tienes dudas, sugerencias o comentarios sobre nuestro sistema de trueque ecológico, ¡escríbenos!
+        </p>
+
+        <form action="<?= PUBLIC_PATH ?>contact/enviar" method="post" class="needs-validation" novalidate>
+            <div class="mb-3">
+                <label for="nombre" class="form-label fw-bold">Nombre completo</label>
+                <input type="text" class="form-control rounded-4 shadow-sm" id="nombre" name="nombre" placeholder="Tu nombre completo" required>
+            </div>
+
+            <div class="mb-3">
+                <label for="email" class="form-label fw-bold">Correo electrónico</label>
+                <input type="email" class="form-control rounded-4 shadow-sm" id="email" name="email" placeholder="tunombre@ejemplo.com" required>
+            </div>
+
+            <div class="mb-3">
+                <label for="asunto" class="form-label fw-bold">Asunto</label>
+                <input type="text" class="form-control rounded-4 shadow-sm" id="asunto" name="asunto" placeholder="Motivo de tu mensaje" required>
+            </div>
+
+            <div class="mb-3">
+                <label for="mensaje" class="form-label fw-bold">Mensaje</label>
+                <textarea class="form-control rounded-4 shadow-sm" id="mensaje" name="mensaje" rows="4" placeholder="Escribe aquí tu mensaje" required></textarea>
+            </div>
+
+            <div class="text-center">
+                <button type="submit" class="btn btn-success rounded-4 px-4 py-2 shadow-sm">
+                    <i class="fas fa-paper-plane"></i> Enviar mensaje
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <div class="card-footer text-center">
+        <small>💚 Gracias por ayudarnos a construir una comunidad más sostenible.</small>
+    </div>
+</div>

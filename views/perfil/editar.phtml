@@ -1,0 +1,110 @@
+<?php
+// Si no hay usuario, redirigir automáticamente
+if (!isset($usuario)) {
+    Redirect::to('perfil');
+    return;
+}
+?>
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-lg border-0 rounded-4">
+                <div class="card-header bg-success text-white d-flex justify-content-between align-items-center rounded-top-4">
+                    <h4 class="mb-0"><i class="bi bi-person-lines-fill"></i> Editar Perfil de Usuario</h4>
+                    <a href="<?php echo PUBLIC_PATH ?>perfil" class="btn btn-light btn-sm">
+                        🔙 Regresar
+                    </a>
+                </div>
+
+                <div class="card-body p-4 bg-light">
+                    <?php Flash::show('', false) ?>
+
+                    <?= Form::open('perfil/editar') ?>
+
+                    <div class="form-floating mb-3">
+                        <?= Form::email('usuario.email', [
+                            'class' => 'form-control',
+                            'id' => 'email',
+                            'placeholder' => 'Correo Electrónico',
+                            'value' => $usuario->email,
+                            'required' => true
+                        ]) ?>
+                        <label for="email">📧 Correo Electrónico</label>
+                    </div>
+
+                    <div class="form-floating mb-4">
+                        <?= Form::text('usuario.username', [
+                            'class' => 'form-control',
+                            'id' => 'username',
+                            'placeholder' => 'Nombre de Usuario',
+                            'value' => $usuario->username ?? '',
+                            'required' => true
+                        ]) ?>
+                        <label for="username">👤 Nombre de Usuario</label>
+                    </div>
+
+                    <h6 class="text-muted mb-3 mt-4">🔒 Cambiar Contraseña (opcional)</h6>
+
+                    <div class="form-floating mb-3">
+                        <?php
+                        // El campo queda vacío porque eliminamos $usuario->password en el controlador.
+                        // Aquí usamos el Form::pass() simple.
+                        echo Form::pass('usuario.password', [
+                            'class' => 'form-control',
+                            'id' => 'password',
+                            'placeholder' => 'Nueva contraseña'
+                        ]);
+                        ?>
+                        <label for="password">Nueva Contraseña</label>
+                        <small class="text-muted">Dejar vacío para no cambiar</small>
+                    </div>
+
+                    <div class="form-floating mb-4">
+                        <?php
+                        // Usamos el Form::pass() simple para Confirmación.
+                        echo Form::pass('usuario.password_confirm', [
+                            'class' => 'form-control',
+                            'id' => 'password_confirm',
+                            'placeholder' => 'Confirmar contraseña'
+                        ]);
+                        ?>
+                        <label for="password_confirm">Confirmar Nueva Contraseña</label>
+                    </div>
+
+                    <div class="d-flex justify-content-between align-items-center mt-4">
+                        <a href="<?php echo PUBLIC_PATH ?>perfil" class="btn btn-secondary px-4">
+                            ❌ Cancelar
+                        </a>
+                        <?= Form::submit('💾 Guardar Cambios', 'class="btn btn-success px-4"') ?>
+                    </div>
+
+                    <?= Form::close() ?>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    body {
+        background-color: #cce7ff; /* Azul celeste */
+    }
+    .card {
+        transition: all 0.2s ease-in-out;
+    }
+    .card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+    }
+    .btn {
+        border-radius: 10px;
+        font-weight: 500;
+    }
+    .card-header h4 {
+        font-weight: 600;
+    }
+    label {
+        color: #333;
+    }
+</style>

@@ -1,0 +1,98 @@
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h4>✏️ Editar Usuario: <?= $usuario->username ?></h4>
+                        <a href="<?= PUBLIC_PATH ?>usuario" class="btn btn-outline-secondary">
+                            <i class="fas fa-arrow-left"></i> Volver
+                        </a>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="row mb-4">
+                        <div class="col-12">
+                            <div class="d-flex align-items-center">
+                                <div class="avatar bg-primary text-white rounded-circle me-3 d-flex align-items-center justify-content-center" style="width: 60px; height: 60px; font-size: 24px;">
+                                    <?= strtoupper(substr($usuario->username, 0, 2)) ?>
+                                </div>
+                                <div>
+                                    <h5 class="mb-1"><?= $usuario->username ?></h5>
+                                    <p class="text-muted mb-0">ID: <?= $usuario->id ?></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <?= Form::open('usuario/editar/' . $usuario->id) ?>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <?= Form::label('usuario[username]', 'Nombre de Usuario:', ['class' => 'form-label']) ?>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fas fa-user"></i></span>
+                                    <?= Form::text('usuario[username]', ['value' => $usuario->username, 'class' => 'form-control', 'required' => true]) ?>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <?= Form::label('usuario[email]', 'Email:', ['class' => 'form-label']) ?>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fas fa-envelope"></i></span>
+                                    <?= Form::email('usuario[email]', ['value' => $usuario->email, 'class' => 'form-control', 'required' => true]) ?>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <?= Form::label('usuario[rol]', 'Rol:', ['class' => 'form-label']) ?>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fas fa-tag"></i></span>
+                                    <?= Form::select('usuario[rol]', [
+                                        'usuario' => '👤 Usuario',
+                                        'admin' => '👑 Administrador'
+                                    ], ['value' => $usuario->rol, 'class' => 'form-select', 'required' => true]) ?>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">Estado Actual:</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fas fa-info-circle"></i></span>
+                                    <input type="text" class="form-control"
+                                           value="<?= $usuario->activo ? '✅ Activo' : '⚠️ Inactivo' ?>"
+                                           readonly>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="alert alert-warning">
+                                <i class="fas fa-exclamation-triangle"></i>
+                                <strong>Nota:</strong> Para cambiar la contraseña, usa el botón específico en la lista de usuarios.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                        <a href="<?= PUBLIC_PATH ?>usuario" class="btn btn-secondary">
+                            <i class="fas fa-times"></i> Cancelar
+                        </a>
+                        <?= Form::submit('Actualizar Usuario', ['class' => 'btn btn-primary']) ?>
+                    </div>
+                    <?= Form::close() ?>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

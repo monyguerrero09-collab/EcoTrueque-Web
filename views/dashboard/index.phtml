@@ -1,0 +1,233 @@
+<?php
+
+// Acceso correcto a las variables pasadas por el controlador (sin usar $this->view->data):
+$total_usuarios = $total_usuarios ?? 0;
+$trueques_pendientes = $trueques_pendientes ?? 0;
+$articulos_reportados = $articulos_reportados ?? 0;
+
+// Verificar el rol del usuario
+$rol = Auth::user()['rol'];
+$es_admin = ($rol == 1); // True si el rol en la base de datos es 1
+
+// Variable dummy para la nueva tarjeta si no existe en el controlador.
+$trueques_pendientes_usuario = 2; // Ejemplo de número
+?>
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-12 col-lg-10">
+            <div class="card shadow-lg border-0 rounded-4">
+                <div class="card-header bg-success text-white d-flex justify-content-between align-items-center rounded-top-4">
+                    <h4 class="mb-0">
+                        <i class="bi bi-speedometer2"></i> Panel de Control Principal
+                    </h4>
+                    <div>
+                        <a href="<?php echo PUBLIC_PATH ?>session/logout" class="btn btn-light btn-sm me-2">
+                            🚪 Cerrar Sesión
+                        </a>
+                        <a href="<?php echo PUBLIC_PATH ?>session/index" class="btn btn-outline-light btn-sm">
+                            🔙 Volver a Inicio
+                        </a>
+                    </div>
+                </div>
+
+                <div class="card-body p-4 bg-light">
+                    <p class="lead text-center">
+                        ¡Bienvenido,
+                        <strong class="text-success">
+                            <?php echo Auth::user()['username'] ?? 'Usuario' ?>
+                        </strong>!
+                    </p>
+
+                    <!-- Mostrar la etiqueta de rol con color dinámico -->
+                    <p class="text-center text-muted mb-3">
+                        Tu rol actual es:
+                        <span class="badge bg-<?php echo $es_admin ? 'danger' : 'info' ?>">
+                            <?php echo $es_admin ? 'admin' : 'Usuario Estándar' ?>
+                        </span>
+                    </p>
+
+                    <hr>
+
+                    <!-- LÓGICA CONDICIONAL DE ADMINISTRACIÓN -->
+                    <?php if ($es_admin): ?>
+                        <h5 class="text-center text-danger fw-bold mb-4">
+                            Funciones Exclusivas de Administrador
+                        </h5>
+
+                        <!-- Tarjetas de Estadísticas de Administración (Solo para Rol 1) -->
+                        <div class="row text-center mt-4">
+                            <div class="col-md-4 mb-3">
+                                <div class="card bg-info text-white shadow rounded-4 h-100">
+                                    <div class="card-body">
+                                        <h5 class="card-title">
+                                            <i class="bi bi-people-fill"></i> Total Usuarios
+                                        </h5>
+                                        <p class="card-text fs-2 fw-bold"><?php echo $total_usuarios ?></p>
+                                        <a href="<?php echo PUBLIC_PATH ?>roles/index" class="btn btn-light btn-sm">
+                                            Gestion de Roles
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-4 mb-3">
+                                <div class="card bg-warning text-dark shadow rounded-4 h-100">
+                                    <div class="card-body">
+                                        <h5 class="card-title">
+                                            <i class="bi bi-exclamation-triangle-fill"></i> Artículos Reportados
+                                        </h5>
+                                        <p class="card-text fs-2 fw-bold"><?php echo $articulos_reportados ?></p>
+                                        <a href="<?php echo PUBLIC_PATH ?>admin/reportes" class="btn btn-light btn-sm">
+                                            Revisar Reportes
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-4 mb-3">
+                                <div class="card bg-danger text-white shadow rounded-4 h-100">
+                                    <div class="card-body">
+                                        <h5 class="card-title">
+                                            <i class="bi bi-tools"></i> Mantenimiento
+                                        </h5>
+                                        <p class="card-text fs-2 fw-bold">0</p>
+                                        <a href="<?php echo PUBLIC_PATH ?>admin/mantenimiento" class="btn btn-light btn-sm">
+                                            Herramientas del Sistema
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <hr>
+                    <?php endif; ?>
+                    <!-- FIN LÓGICA CONDICIONAL DE ADMINISTRACIÓN -->
+
+                    <!-- Contenido General para Todos los Usuarios -->
+                    <h5 class="text-center text-success fw-bold mb-4">
+                        Acciones Principales
+                    </h5>
+
+                    <div class="row mt-4 text-center">
+
+                        <!-- Tarjeta 1: Acceder a mi Perfil -->
+                        <div class="col-md-3 mb-4">
+                            <div class="card h-100 shadow-sm rounded-4 border-success">
+                                <div class="card-body p-4">
+                                    <h5 class="card-title text-success mb-3">
+                                        <i class="bi bi-person-circle fs-4 me-2"></i> Mi Perfil
+                                    </h5>
+                                    <p class="card-text text-muted small">
+                                        Modifica tus datos personales, contraseña y preferencias.
+                                    </p>
+                                    <a href="<?php echo PUBLIC_PATH ?>perfil/index" class="btn btn-success mt-3 w-100">
+                                        Acceder &rarr;
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Tarjeta 2: Publicar Nuevo Trueque -->
+                        <div class="col-md-3 mb-4">
+                            <div class="card h-100 shadow-sm rounded-4 border-warning">
+                                <div class="card-body p-4">
+                                    <h5 class="card-title text-warning mb-3">
+                                        <i class="bi bi-arrow-repeat fs-4 me-2"></i> Nuevo Trueque
+                                    </h5>
+                                    <p class="card-text text-muted small">
+                                        Sube un artículo reciclable o de segunda mano para intercambiar.
+                                    </p>
+                                    <a href="<?php echo PUBLIC_PATH ?>trueque/publicar" class="btn btn-warning text-dark mt-3 w-100">
+                                        Publicar ahora &rarr;
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Tarjeta 3: Descubre Tesoros con Valor -->
+                        <div class="col-md-3 mb-4">
+                            <div class="card h-100 shadow-sm rounded-4 border-primary">
+                                <div class="card-body p-4">
+                                    <h5 class="card-title text-primary mb-3">
+                                        <i class="bi bi-journal-plus fs-4 me-2"></i> Descubre Tesoros
+                                    </h5>
+                                    <p class="card-text text-muted small">
+                                        Explora los trueques disponibles y encuentra algo de valor.
+                                    </p>
+                                    <a href="<?php echo PUBLIC_PATH ?>trueque/index" class="btn btn-primary mt-3 w-100">
+                                        Explorar &rarr;
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Tarjeta 4: Historial de Trueques -->
+                        <div class="col-md-3 mb-4">
+                            <div class="card h-100 shadow-sm rounded-4 border-info">
+                                <div class="card-body p-4">
+                                    <h5 class="card-title text-info mb-3">
+                                        <i class="bi bi-clock-history fs-4 me-2"></i> Historial de Trueques
+                                    </h5>
+                                    <p class="card-text text-muted small">
+                                        Consulta los trueques completados y revisa tus intercambios pasados.
+                                    </p>
+                                    <a href="<?php echo PUBLIC_PATH ?>trueque/historial" class="btn btn-info text-dark mt-3 w-100">
+                                        Ver historial &rarr;
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <!-- FIN DE NUEVAS TARJETAS DE ACCIÓN -->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Estilos personalizados -->
+<style>
+    body {
+        background-color: #cce7ff; /* Azul celeste */
+    }
+
+    .card {
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+    }
+
+    .btn {
+        border-radius: 10px;
+        font-weight: 500;
+    }
+
+    .card-header h4 {
+        font-weight: 600;
+    }
+
+    .card-body h5 {
+        font-weight: 600;
+    }
+
+    .card.border-success {
+        border-left: 5px solid #198754 !important;
+    }
+
+    .card.border-warning {
+        border-left: 5px solid #ffc107 !important;
+    }
+
+    .card.border-primary {
+        border-left: 5px solid #0d6efd !important;
+    }
+
+    .card.border-info {
+        border-left: 5px solid #0dcaf0 !important;
+    }
+</style>

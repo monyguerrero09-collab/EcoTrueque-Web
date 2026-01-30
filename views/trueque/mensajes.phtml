@@ -1,0 +1,52 @@
+<?php View::content(); ?>
+<style>
+    .badge-noti {
+        background: #e41e3f;
+        color: white;
+        border-radius: 50px;
+        font-size: 12px;
+        padding: 3px 8px;
+        font-weight: bold;
+    }
+</style>
+
+<div class="container mt-5">
+    <div class="card shadow-lg p-4 rounded-4">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h2 class="mb-0">💬 Mensajes</h2>
+            <?php if (!empty($total_no_leidos)): ?>
+                <span class="badge-noti"><?= (int)$total_no_leidos ?></span>
+            <?php endif; ?>
+        </div>
+
+        <?php if (empty($conversaciones)) : ?>
+            <div class="alert alert-info text-center">
+                No tienes conversaciones.
+            </div>
+        <?php else : ?>
+
+            <div class="list-group">
+                <?php foreach ($conversaciones as $c): ?>
+                    <a href="<?= PUBLIC_PATH ?>trueque/conversacion/<?= (int)$c->trueque_id ?>"
+                       class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+
+                        <div>
+                            <strong><?= htmlspecialchars($c->nombre_usuario) ?></strong><br>
+                            <small class="text-muted">
+                                <?= mb_strimwidth(strip_tags($c->ultimo_mensaje), 0, 40, '...') ?>
+                            </small>
+                        </div>
+
+                        <?php if ($c->no_leidos > 0): ?>
+                            <span class="badge-noti"><?= (int)$c->no_leidos ?></span>
+                        <?php endif; ?>
+
+                    </a>
+                <?php endforeach; ?>
+            </div>
+
+        <?php endif; ?>
+    </div>
+</div>
+
+

@@ -1,0 +1,84 @@
+<?php
+/**
+ * 🌿 Vista: Historial de Trueques
+ * ---------------------------------
+ * Muestra una tabla con todos los trueques.
+ * Recibe la variable $trueques desde el controlador.
+ */
+?>
+
+<div class="card card-success card-outline">
+
+    <div class="card-header">
+        <h3 class="card-title">
+            <i class="fas fa-history"></i>
+            Listado de Trueques Publicados
+        </h3>
+
+        <div class="card-tools">
+            <?php echo Html::link('trueque/publicar', '🌿 Publicar Nuevo', 'class="btn btn-primary"') ?>
+        </div>
+    </div>
+
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-striped table-hover">
+
+                <thead>
+                <tr>
+                    <th style="width: 10px">#</th>
+                    <th>Ofrezco</th>
+                    <th>Busco</th>
+                    <th>Fecha</th>
+                    <th style="width: 180px">Acciones</th>
+                </tr>
+                </thead>
+
+                <tbody>
+                <?php if (count($trueques) > 0) : ?>
+
+                    <?php foreach ($trueques as $trueque) : ?>
+                        <tr>
+                            <td><?php echo $trueque->id ?></td>
+
+                            <td>
+                                <?php echo htmlspecialchars($trueque->ofrezco) ?>
+                            </td>
+
+                            <td>
+                                <?php echo htmlspecialchars($trueque->busco) ?>
+                            </td>
+
+                            <td>
+                                <?php echo $trueque->fecha ?>
+                            </td>
+
+                            <td>
+                                <?php echo Html::link("trueque/ver/{$trueque->id}", '👁️ Ver', 'class="btn btn-info btn-xs"') ?>
+
+                                <?php echo Html::link("trueque/editar/{$trueque->id}", '📝 Editar', 'class="btn btn-warning btn-xs"') ?>
+
+                                <?php echo Html::link(
+                                    "trueque/eliminar/{$trueque->id}",
+                                    '🗑️ Eliminar',
+                                    'class="btn btn-danger btn-xs"',
+                                    '¿Estás seguro de eliminar este trueque?' // Mensaje de confirmación
+                                ) ?>
+                            </td>
+                        </tr>
+                    <?php endforeach; ?>
+
+                <?php else : ?>
+                    <tr>
+                        <td colspan="5" class="text-center">
+                            No hay trueques publicados por el momento. ¡Sé el primero!
+                        </td>
+                    </tr>
+                <?php endif; ?>
+                </tbody>
+
+            </table>
+        </div>
+    </div>
+
+</div>

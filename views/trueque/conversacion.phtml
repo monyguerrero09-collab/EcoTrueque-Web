@@ -1,0 +1,96 @@
+<?php View::content(); ?>
+
+<style>
+    .chat-box {
+        display: flex;
+        flex-direction: column;
+        height: 500px;
+        overflow-y: auto;
+        background: #f0f2f5;
+        padding: 15px;
+        border-radius: 12px;
+    }
+    .msg {
+        max-width: 70%;
+        margin-bottom: 10px;
+        padding: 12px 18px;
+        border-radius: 20px;
+        font-size: 14px;
+    }
+    .me {
+        background: #0084ff;
+        color: white;
+        align-self: flex-end;
+    }
+    .other {
+        background: #e4e6eb;
+        color: black;
+        align-self: flex-start;
+    }
+    .time {
+        font-size: 11px;
+        color: #666;
+        margin-top: 5px;
+    }
+    .chat-input-area {
+        display: flex;
+        gap: 10px;
+        padding: 12px;
+        background: white;
+        border-top: 1px solid #ddd;
+    }
+    textarea {
+        flex: 1;
+        border-radius: 20px;
+        padding: 10px;
+        resize: none;
+    }
+    .send-btn {
+        background: #0084ff;
+        color: white;
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        border: none;
+        font-weight: bold;
+    }
+</style>
+
+<div class="card shadow mb-4">
+    <div class="card-header bg-primary text-white fw-bold">
+        💬 Conversación
+    </div>
+
+    <div id="chat" class="chat-box">
+        <?php if (!empty($ultimos)): ?>
+            <?php foreach ($ultimos as $m):
+                $es_mio = ($m->remitente_id == $usuario_actual);
+                ?>
+                <div class="msg <?= $es_mio ? 'me' : 'other' ?>">
+                    <?= nl2br(htmlspecialchars($m->mensaje)) ?>
+                    <div class="time">
+                        <?= date('d/m/Y H:i', strtotime($m->fecha_envio)) ?>
+                    </div>
+                </div>
+            <?php endforeach; ?>
+        <?php else: ?>
+            <p class="text-center text-muted">No hay mensajes.</p>
+        <?php endif; ?>
+    </div>
+
+    <form class="chat-input-area" action="<?= PUBLIC_PATH ?>trueque/enviar_mensaje" method="POST">
+        <input type="hidden" name="mensaje[trueque_id]" value="<?= (int)$trueque->id ?>">
+        <input type="hidden" name="mensaje[destinatario_id]" value="<?= (int)$trueque->usuario_id ?>">
+
+        <textarea name="mensaje[mensaje]" placeholder="Escribe..." required></textarea>
+        <button class="send-btn">➤</button>
+    </form>
+</div>
+
+<script>
+    const chat = document.getElementById("chat");
+    chat.scrollTop = chat.scrollHeight;
+</script>
+
+
+

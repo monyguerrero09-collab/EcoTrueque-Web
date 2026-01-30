@@ -1,0 +1,72 @@
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h4>🏷️ Crear Nuevo Rol</h4>
+                        <a href="<?= PUBLIC_PATH ?>roles" class="btn btn-outline-secondary">
+                            ⬅️ Volver
+                        </a>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <?= Form::open('roles/crear') ?>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <?= Form::label('rol[nombre]', 'Nombre del Rol:', ['class' => 'form-label']) ?>
+                                <div class="input-group">
+                                    <span class="input-group-text">🏷️</span>
+                                    <?= Form::text('rol[nombre]', ['class' => 'form-control', 'required' => true, 'placeholder' => 'ej: editor, moderador']) ?>
+                                </div>
+                                <div class="form-text">Solo letras minúsculas, sin espacios</div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <?= Form::label('rol[icono]', 'Icono (Emoji):', ['class' => 'form-label']) ?>
+                                <div class="input-group">
+                                    <span class="input-group-text">😀</span>
+                                    <?= Form::text('rol[icono]', ['class' => 'form-control', 'required' => true, 'placeholder' => '📝']) ?>
+                                </div>
+                                <div class="form-text">Un emoji que represente el rol</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <?= Form::label('rol[descripcion]', 'Descripción:', ['class' => 'form-label']) ?>
+                        <div class="input-group">
+                            <span class="input-group-text">📝</span>
+                            <?= Form::textarea('rol[descripcion]', ['class' => 'form-control', 'rows' => 3, 'required' => true, 'placeholder' => 'Describe las funciones y permisos de este rol...']) ?>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="alert alert-info">
+                                <strong>💡 Ejemplos de roles:</strong>
+                                <ul class="mb-0 mt-2">
+                                    <li><strong>📝 editor:</strong> Puede crear y editar contenido</li>
+                                    <li><strong>👮 moderador:</strong> Puede moderar usuarios y contenido</li>
+                                    <li><strong>📊 analista:</strong> Solo puede ver reportes y estadísticas</li>
+                                    <li><strong>🎯 vendedor:</strong> Gestiona ventas y clientes</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                        <a href="<?= PUBLIC_PATH ?>roles" class="btn btn-secondary">
+                            ❌ Cancelar
+                        </a>
+                        <?= Form::submit('✅ Crear Rol', ['class' => 'btn btn-primary']) ?>
+                    </div>
+                    <?= Form::close() ?>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

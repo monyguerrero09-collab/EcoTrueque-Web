@@ -1,0 +1,27 @@
+<div class="container">
+    <h1>Publicar Nuevo Trueque Ecológico 🌿</h1>
+    <p>Completa la información para que la comunidad sepa qué ofreces y qué necesitas.</p>
+
+    <?php echo Form::open('trueque/crear'); ?>
+
+    <div class="form-group">
+        <label for="ofrezco">Qué ofrezco:</label>
+        <?php echo Form::text('trueque.ofrezco', 'class="form-control"', 'placeholder="Ej: Macetas de arcilla hechas a mano"'); ?>
+    </div>
+
+    <div class="form-group">
+        <label for="busco">Qué busco a cambio:</label>
+        <?php echo Form::text('trueque.busco', 'class="form-control"', 'placeholder="Ej: Semillas orgánicas o tierra abonada"'); ?>
+    </div>
+
+    <div class="form-group">
+        <label for="descripcion">Descripción (Opcional):</label>
+        <?php echo Form::textarea('trueque.descripcion', 'class="form-control"', 'rows="4"'); ?>
+    </div>
+
+    <?php echo Form::submit('Publicar Trueque', 'class="btn btn-success mt-3"'); ?>
+
+    <?php echo Form::close(); ?>
+
+    <?php echo Html::link('trueque/', '<< Volver a la Lista', 'class="btn btn-secondary mt-3"') ?>
+</div>

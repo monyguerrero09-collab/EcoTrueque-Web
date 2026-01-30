@@ -1,0 +1,83 @@
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h4>👤 Crear Nuevo Usuario</h4>
+                        <a href="<?= PUBLIC_PATH ?>usuario" class="btn btn-outline-secondary">
+                            <i class="fas fa-arrow-left"></i> Volver
+                        </a>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <?= Form::open('usuario/crear') ?>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <?= Form::label('usuario[username]', 'Nombre de Usuario:', ['class' => 'form-label']) ?>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fas fa-user"></i></span>
+                                    <?= Form::text('usuario[username]', ['class' => 'form-control', 'required' => true]) ?>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <?= Form::label('usuario[email]', 'Email:', ['class' => 'form-label']) ?>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fas fa-envelope"></i></span>
+                                    <?= Form::email('usuario[email]', ['class' => 'form-control', 'required' => true]) ?>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <?= Form::label('usuario[password]', 'Contraseña:', ['class' => 'form-label']) ?>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fas fa-lock"></i></span>
+                                    <?= Form::password('usuario[password]', ['class' => 'form-control', 'required' => true, 'minlength' => 6]) ?>
+                                </div>
+                                <div class="form-text">Mínimo 6 caracteres</div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <?= Form::label('usuario[rol]', 'Rol:', ['class' => 'form-label']) ?>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fas fa-tag"></i></span>
+                                    <?= Form::select('usuario[rol]', [
+                                        'usuario' => '👤 Usuario',
+                                        'admin' => '👑 Administrador'
+                                    ], ['class' => 'form-select', 'required' => true]) ?>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="alert alert-info">
+                                <i class="fas fa-info-circle"></i>
+                                <strong>Información:</strong> El usuario será creado con estado activo por defecto.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                        <a href="<?= PUBLIC_PATH ?>usuario" class="btn btn-secondary">
+                            <i class="fas fa-times"></i> Cancelar
+                        </a>
+                        <?= Form::submit('Crear Usuario', ['class' => 'btn btn-primary']) ?>
+                    </div>
+                    <?= Form::close() ?>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

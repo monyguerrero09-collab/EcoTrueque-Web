@@ -1,0 +1,179 @@
+<?php
+// ✅ Usuario actual
+$usuario_actual = (int) Session::get('id');
+?>
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Trueque Ecológico | Lista de Trueques</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+        body {
+            background: linear-gradient(135deg, #a8edea, #fed6e3);
+            min-height: 100vh;
+            font-family: "Poppins", sans-serif;
+            color: #333;
+        }
+        .hero-title { font-weight: 600; color: #2c3e50; }
+        .hero-subtitle { color: #6c757d; font-weight: 300; }
+        .divider-green {
+            height: 3px;
+            background-color: #82d173;
+            border-radius: 2px;
+            width: 100%;
+            margin: 10px 0 30px 0;
+        }
+        .card {
+            border-radius: .5rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            background-color: #fff;
+            transition: transform .2s;
+        }
+        .card:hover { transform: translateY(-5px); }
+        .btn-green {
+            background-color: #82d173;
+            color: white;
+            font-weight: 600;
+        }
+        .avatar {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #82d173;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container py-5">
+
+    <div class="mb-4">
+        <h2 class="hero-title mb-2">Descubre Tesoros con Valor Real</h2>
+        <p class="hero-subtitle mb-0">Explora las ofertas más recientes de nuestra comunidad.</p>
+        <div class="divider-green"></div>
+    </div>
+
+    <!-- ✅ Mensajes Flash -->
+    <?php if (Session::get('valid')): ?>
+        <div class="alert alert-success alert-dismissible fade show">
+            <?= htmlspecialchars((string)Session::get('valid'), ENT_QUOTES, 'UTF-8') ?>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+        <?php Session::delete('valid'); ?>
+    <?php endif; ?>
+
+    <?php if (Session::get('error')): ?>
+        <div class="alert alert-danger alert-dismissible fade show">
+            <?= htmlspecialchars((string)Session::get('error'), ENT_QUOTES, 'UTF-8') ?>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+        <?php Session::delete('error'); ?>
+    <?php endif; ?>
+
+    <div class="row">
+        <?php if (!empty($trueques)): ?>
+            <?php foreach ($trueques as $trueque): ?>
+                <div class="col-md-6 col-lg-3 mb-4">
+                    <div class="card h-100 position-relative">
+
+                        <!-- ✅ Botón eliminar -->
+                        <?php if ($usuario_actual === (int)$trueque->usuario_id): ?>
+                            <div class="position-absolute top-0 end-0 p-2">
+                                <a href="javascript:void(0);"
+                                   onclick="confirmarEliminacion('<?= PUBLIC_PATH ?>trueque/eliminar/<?= (int)$trueque->id ?>')"
+                                   class="btn btn-light btn-sm text-danger" title="Eliminar">🗑️</a>
+                            </div>
+                        <?php endif; ?>
+
+                        <!-- ✅ Imagen -->
+                        <?php if (!empty($trueque->imagen_mime) && !empty($trueque->imagen_base64)): ?>
+                            <img src="data:<?= htmlspecialchars($trueque->imagen_mime) ?>;base64,<?= $trueque->imagen_base64 ?>"
+                                 class="card-img-top" style="height:200px; object-fit:cover;">
+                        <?php else: ?>
+                            <img src="https://placehold.co/400x200" class="card-img-top" style="height:200px;">
+                        <?php endif; ?>
+
+                        <div class="card-body d-flex flex-column">
+
+                            <!-- ✅ Usuario -->
+                            <div class="d-flex align-items-center mb-2">
+                                <?php if (!empty($trueque->usuario_avatar)): ?>
+                                    <img src="<?= PUBLIC_PATH ?>img/avatars/<?= htmlspecialchars($trueque->usuario_avatar) ?>" class="avatar me-2">
+                                <?php else: ?>
+                                    <img src="https://placehold.co/100x100" class="avatar me-2">
+                                <?php endif; ?>
+                                <strong><?= htmlspecialchars($trueque->email ?? 'Usuario', ENT_QUOTES, 'UTF-8') ?></strong>
+                            </div>
+
+                            <p class="text-muted small">
+                                <?= htmlspecialchars(substr((string)$trueque->descripcion, 0, 60)) ?>...
+                            </p>
+
+                            <h5 class="fw-bold text-center">
+                                <?= htmlspecialchars($trueque->ofrezco) ?>
+                            </h5>
+
+                            <p class="text-center small text-secondary">
+                                Intercambio por:<br>
+                                <strong><?= htmlspecialchars($trueque->busco) ?></strong>
+                            </p>
+
+                            <?php if (!empty($trueque->direccion)): ?>
+                                <p class="card-text small text-muted">
+                                    📍 <?= htmlspecialchars($trueque->direccion) ?>
+                                </p>
+                            <?php endif; ?>
+
+                            <div class="mt-auto d-grid gap-2">
+                                <a href="<?= PUBLIC_PATH ?>trueque/ver/<?= (int)$trueque->id ?>" class="btn btn-outline-success btn-sm">
+                                    Ver Detalles
+                                </a>
+
+                                <?php if ($usuario_actual && $usuario_actual !== (int)$trueque->usuario_id): ?>
+                                    <a href="<?= PUBLIC_PATH ?>trueque/conversacion/<?= (int)$trueque->id ?>" class="btn btn-success btn-sm">
+                                        💬 Chatear
+                                    </a>
+                                <?php endif; ?>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            <?php endforeach; ?>
+        <?php else: ?>
+            <div class="col-12">
+                <div class="alert alert-light text-center">
+                    🌱 Aún no hay trueques publicados.
+                </div>
+            </div>
+        <?php endif; ?>
+    </div>
+
+    <div class="text-center mt-5">
+        <a href="<?= PUBLIC_PATH ?>trueque/publicar" class="btn btn-green btn-lg">
+            ➕ Publicar un Trueque
+        </a>
+    </div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+    function confirmarEliminacion(url) {
+        if (confirm('¿Seguro que deseas eliminar este trueque?')) {
+            window.location.href = url;
+        }
+    }
+</script>
+
+</body>
+</html>
+
